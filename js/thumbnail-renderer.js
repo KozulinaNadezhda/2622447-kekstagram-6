@@ -7,7 +7,9 @@ const thumbnailRenderer = (function() {
     image.src = photoData.url;
     image.alt = photoData.description;
     thumbnailElement.querySelector('.picture__likes').textContent = photoData.likes;
-    thumbnailElement.querySelector('.picture__comments').textContent = photoData.comments;
+    thumbnailElement.querySelector('.picture__comments').textContent = photoData.comments.length;
+
+    thumbnailElement.dataset.photoId = photoData.id;
     return thumbnailElement;
   }
 
