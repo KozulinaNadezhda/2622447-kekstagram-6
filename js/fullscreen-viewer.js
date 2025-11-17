@@ -9,6 +9,10 @@ const fullscreenViewer = (function() {
   const commentsLoader = bigPicture.querySelector('.comments-loader');
   const cancelButton = bigPicture.querySelector('.big-picture__cancel');
 
+  const COMMENTS_PER_PORTION = 5;
+  let currentComments = [];
+  let shownCommentsCount = 0;
+
   function openFullscreen(photoData) {
     bigPicture.classList.remove('hidden');
     document.body.classList.add('modal-open');
@@ -19,16 +23,25 @@ const fullscreenViewer = (function() {
     commentsCount.textContent = photoData.comments.length;
     socialCaption.textContent = photoData.description;
 
-    commentCountBlock.classList.add('hidden');
-    commentsLoader.classList.add('hidden');
+    commentCountBlock.classList.remove('hidden');
+    commentsLoader.classList.remove('hidden');
 
-    renderComments(photoData.comments);
+    currentComments = photoData.comments;
+    shownCommentsCount = 0;
+
+    renderComments();
   }
 
-  function renderComments(comments) {
+  function renderComments() {
     socialComments.innerHTML = '';
 
-    comments.forEach((comment) => {
+    const commentsToShow = Math.min(
+      shownCommentsCount + COMMENTS_PER_PORTION,
+      currentComments.length
+    );
+
+    for (let i = 0; i < commentsToShow; i++) {
+      const comment = currentComments[i];
       const commentElement = document.createElement('li');
       commentElement.classList.add('social__comment');
 
@@ -42,12 +55,34 @@ const fullscreenViewer = (function() {
       `;
 
       socialComments.appendChild(commentElement);
-    });
+    }
+
+    shownCommentsCount = commentsToShow;
+    updateCommentsCounter();
+
+    if (shownCommentsCount >= currentComments.length) {
+      commentsLoader.classList.add('hidden');
+    } else {
+      commentsLoader.classList.remove('hidden');
+    }
+  }
+
+  function updateCommentsCounter() {
+    const commentsCountElement = commentCountBlock.querySelector('.comments-count');
+    const commentCountText = commentCountBlock.firstChild;
+    commentsCountElement.textContent = currentComments.length;
+    commentCountText.textContent = `${shownCommentsCount} из `;
+  }
+
+  function onLoadMoreCommentsClick() {
+    renderComments();
   }
 
   function closeFullscreen() {
     bigPicture.classList.add('hidden');
     document.body.classList.remove('modal-open');
+    currentComments = [];
+    shownCommentsCount = 0;
   }
 
   function onCancelButtonClick() {
@@ -62,6 +97,7 @@ const fullscreenViewer = (function() {
 
   function init() {
     cancelButton.addEventListener('click', onCancelButtonClick);
+    commentsLoader.addEventListener('click', onLoadMoreCommentsClick);
     document.addEventListener('keydown', onDocumentKeydown);
   }
 
