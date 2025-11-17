@@ -1,3 +1,5 @@
 import { generatePhotos } from './data.js';
+import thumbnailRenderer from './thumbnail-renderer.js';
 
-generatePhotos(25);
+const photos = generatePhotos(25);
+thumbnailRenderer.renderThumbnails(photos);
