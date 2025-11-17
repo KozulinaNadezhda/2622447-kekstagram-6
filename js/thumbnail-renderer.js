@@ -6,8 +6,8 @@ const thumbnailRenderer = (function() {
     const image = thumbnailElement.querySelector('.picture__img');
     image.src = photoData.url;
     image.alt = photoData.description;
-    thumbnailElement.querySelector('.picture__likes').textContent = photoData.likes;
     thumbnailElement.querySelector('.picture__comments').textContent = photoData.comments.length;
+    thumbnailElement.querySelector('.picture__likes').textContent = photoData.likes;
 
     thumbnailElement.dataset.photoId = photoData.id;
     return thumbnailElement;
