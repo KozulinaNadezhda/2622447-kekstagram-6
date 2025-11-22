@@ -1,3 +1,6 @@
+import { resetScale } from './scale.js';
+import { resetEffects } from './effect.js';
+
 const form = document.querySelector('.img-upload__form');
 const overlay = document.querySelector('.img-upload__overlay');
 const body = document.querySelector('body');
@@ -8,7 +11,6 @@ const commentField = document.querySelector('.text__description');
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_COMMENT_LENGTH = 140;
-
 const TAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
 
 const pristine = new Pristine(form, {
@@ -16,7 +18,6 @@ const pristine = new Pristine(form, {
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error',
 });
-
 
 function getTagsFromValue(value) {
   return value.trim().split(' ').filter((tag) => tag.trim().length);
@@ -41,34 +42,14 @@ function validateTagsUnique(value) {
   return lowerCaseTags.length === new Set(lowerCaseTags).size;
 }
 
-
 function validateComment(value) {
   return value.length <= MAX_COMMENT_LENGTH;
 }
 
-pristine.addValidator(
-  hashtagField,
-  validateTagsFormat,
-  'Хэш-тег должен начинаться с #, содержать буквы/цифры и быть не длиннее 20 символов'
-);
-
-pristine.addValidator(
-  hashtagField,
-  validateTagsCount,
-  `Нельзя указать больше ${MAX_HASHTAG_COUNT} хэш-тегов`
-);
-
-pristine.addValidator(
-  hashtagField,
-  validateTagsUnique,
-  'Хэш-теги не должны повторяться'
-);
-
-pristine.addValidator(
-  commentField,
-  validateComment,
-  `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`
-);
+pristine.addValidator(hashtagField, validateTagsFormat, 'Хэш-тег должен начинаться с #, содержать буквы/цифры и быть не длиннее 20 символов');
+pristine.addValidator(hashtagField, validateTagsCount, `Нельзя указать больше ${MAX_HASHTAG_COUNT} хэш-тегов`);
+pristine.addValidator(hashtagField, validateTagsUnique, 'Хэш-теги не должны повторяться');
+pristine.addValidator(commentField, validateComment, `Длина комментария не может быть больше ${MAX_COMMENT_LENGTH} символов`);
 
 
 function openModal() {
@@ -80,6 +61,8 @@ function openModal() {
 function closeModal() {
   form.reset();
   pristine.reset();
+  resetScale();
+  resetEffects();
   overlay.classList.add('hidden');
   body.classList.remove('modal-open');
   document.removeEventListener('keydown', onDocumentKeydown);
@@ -119,7 +102,6 @@ function initUploadForm() {
   cancelButton.addEventListener('click', onCancelButtonClick);
   hashtagField.addEventListener('keydown', onInputKeydown);
   commentField.addEventListener('keydown', onInputKeydown);
-
   form.addEventListener('submit', onFormSubmit);
 }
 
