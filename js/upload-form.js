@@ -2,6 +2,7 @@ import { resetScale } from './scale.js';
 import { resetEffects } from './effect.js';
 import { sendData } from './api.js';
 import { showSuccessMessage, showErrorMessage } from './message.js';
+import { initUploadImage } from './upload-image.js';
 
 const form = document.querySelector('.img-upload__form');
 const overlay = document.querySelector('.img-upload__overlay');
@@ -88,6 +89,7 @@ function unblockSubmitButton() {
 }
 
 function onFileInputChange() {
+  initUploadImage();
   openModal();
 }
 
@@ -101,7 +103,6 @@ function onDocumentKeydown(evt) {
     if (isErrorVisible) {
       return;
     }
-
     evt.preventDefault();
     closeModal();
   }
