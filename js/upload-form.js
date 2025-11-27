@@ -1,5 +1,7 @@
 import { resetScale } from './scale.js';
 import { resetEffects } from './effect.js';
+import { sendData } from './api.js';
+import { showSuccessMessage, showErrorMessage } from './message.js';
 
 const form = document.querySelector('.img-upload__form');
 const overlay = document.querySelector('.img-upload__overlay');
@@ -8,16 +10,23 @@ const cancelButton = document.querySelector('#upload-cancel');
 const fileInput = document.querySelector('#upload-file');
 const hashtagField = document.querySelector('.text__hashtags');
 const commentField = document.querySelector('.text__description');
+const submitButton = document.querySelector('#upload-submit');
 
 const MAX_HASHTAG_COUNT = 5;
 const MAX_COMMENT_LENGTH = 140;
 const TAG_REGEX = /^#[a-zа-яё0-9]{1,19}$/i;
+
+const SubmitButtonText = {
+  IDLE: 'Опубликовать',
+  SENDING: 'Публикую...',
+};
 
 const pristine = new Pristine(form, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextClass: 'img-upload__field-wrapper--error',
 });
+
 
 function getTagsFromValue(value) {
   return value.trim().split(' ').filter((tag) => tag.trim().length);
@@ -68,6 +77,16 @@ function closeModal() {
   document.removeEventListener('keydown', onDocumentKeydown);
 }
 
+function blockSubmitButton() {
+  submitButton.disabled = true;
+  submitButton.textContent = SubmitButtonText.SENDING;
+}
+
+function unblockSubmitButton() {
+  submitButton.disabled = false;
+  submitButton.textContent = SubmitButtonText.IDLE;
+}
+
 function onFileInputChange() {
   openModal();
 }
@@ -78,6 +97,11 @@ function onCancelButtonClick() {
 
 function onDocumentKeydown(evt) {
   if (evt.key === 'Escape') {
+    const isErrorVisible = document.querySelector('.error');
+    if (isErrorVisible) {
+      return;
+    }
+
     evt.preventDefault();
     closeModal();
   }
@@ -90,12 +114,24 @@ function onInputKeydown(evt) {
 }
 
 function onFormSubmit(evt) {
+  evt.preventDefault();
+
   const isValid = pristine.validate();
-  if (!isValid) {
-    evt.preventDefault();
+  if (isValid) {
+    blockSubmitButton();
+    sendData(new FormData(evt.target))
+      .then(() => {
+        closeModal();
+        showSuccessMessage();
+      })
+      .catch(() => {
+        showErrorMessage();
+      })
+      .finally(() => {
+        unblockSubmitButton();
+      });
   }
 }
-
 
 function initUploadForm() {
   fileInput.addEventListener('change', onFileInputChange);
