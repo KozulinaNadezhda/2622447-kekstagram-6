@@ -17,6 +17,7 @@ export function getUniqueNumbers(count, min, max) {
 
 export function showAlert(message) {
   const alertContainer = document.createElement('div');
+  alertContainer.classList.add('data-error');
   alertContainer.style.zIndex = '100';
   alertContainer.style.position = 'absolute';
   alertContainer.style.left = '0';

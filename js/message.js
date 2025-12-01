@@ -4,6 +4,7 @@ const errorTemplate = document.querySelector('#error').content.querySelector('.e
 function showMessage(template, closeButtonClass) {
   const messageElement = template.cloneNode(true);
   const closeButton = messageElement.querySelector(closeButtonClass);
+  messageElement.style.zIndex = '100';
 
   document.body.append(messageElement);
 

@@ -68,10 +68,10 @@ const fullscreenViewer = (function() {
   }
 
   function updateCommentsCounter() {
-    const commentsCountElement = commentCountBlock.querySelector('.comments-count');
-    const commentCountText = commentCountBlock.firstChild;
-    commentsCountElement.textContent = currentComments.length;
-    commentCountText.textContent = `${shownCommentsCount} из `;
+    const totalCountElement = commentCountBlock.querySelector('.social__comment-total-count');
+    const shownCountElement = commentCountBlock.querySelector('.social__comment-shown-count');
+    totalCountElement.textContent = currentComments.length;
+    shownCountElement.textContent = shownCommentsCount;
   }
 
   function onLoadMoreCommentsClick() {
