@@ -89,7 +89,7 @@ function onSliderUpdate() {
     effectLevelElement.value = '';
   } else {
     imageElement.style.filter = `${chosenEffect.style}(${sliderValue}${chosenEffect.unit})`;
-    effectLevelElement.value = sliderValue;
+    effectLevelElement.value = parseFloat(sliderValue);
   }
 }
 
